@@ -1,0 +1,7 @@
+{
+  "_note": "Measured on Hugging Face Jobs, flavor l4x1 (1x NVIDIA L4, sm_89, 23 GiB), $0.80/hr.",
+  "_env": "torch 2.9.1+cu128, axolotl 0.17.0, transformers 5.9.0, peft 0.19.1, liger-kernel, kernels 0.13.0 (flash-attn2 via kernels-community). Qwen3-0.6B QLoRA, seq1024, mbs8, 24 measured steps.",
+  "cloud_vanilla":      {"attn": "sdpa",  "kernels": "none",          "status": "CUDA_OOM (needs ~29 GiB > 23 GiB L4)", "tok_per_s": null, "peak_reserved_gib": null},
+  "cloud_opt":          {"attn": "flash", "kernels": "liger",         "train_runtime": 30.56, "tok_per_s": 6433.5, "peak_reserved_gib": 11.84, "final_loss": 1.009},
+  "cloud_opt_kernels":  {"attn": "flash", "kernels": "liger+lora",    "train_runtime": 29.83, "tok_per_s": 6590.9, "peak_reserved_gib": 9.19,  "final_loss": 1.003}
+}

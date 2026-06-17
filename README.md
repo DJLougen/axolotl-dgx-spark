@@ -6,6 +6,11 @@ Hardware: **NVIDIA GB10** (Grace‑Blackwell, `aarch64`, compute capability **sm
 LPDDR5X (~273 GB/s — bandwidth, not FLOPs, is the binding constraint), driver 580.159.03, CUDA 13.0.
 All work is in the conda env **`axfast`** on `spark-d500` and in `~/axfast-work`.
 
+> **Running on cloud GPUs (x86)?** The recipe is standard Axolotl and transfers directly — see
+> **[CLOUD.md](CLOUD.md)**. Verified on an NVIDIA L4 (HF Jobs): the optimized recipe runs Qwen3-0.6B
+> QLoRA in **9.2 GiB at 6590 tok/s**, while vanilla Axolotl **OOMs on the 24 GiB card**. The GB10-specific
+> `TRITON_PTXAS_PATH`/aarch64 bits below are *not* needed on mainstream cloud GPUs.
+
 ---
 
 ## TL;DR
