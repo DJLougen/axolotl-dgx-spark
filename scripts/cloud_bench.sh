@@ -3,6 +3,9 @@
 # (HF Jobs / RunPod / Lambda / local docker). Proves the optimized recipe transfers off the GB10 and
 # measures vanilla vs optimized (flash + Liger). NO TRITON_PTXAS_PATH needed on mainstream archs.
 set -u
+# The official axolotl image ships a torchvision whose ABI mismatches its torch, which crashes
+# `import transformers` (torchvision::nms). LLM training doesn't need vision -> remove it.
+pip uninstall -y torchvision >/dev/null 2>&1 || true
 echo "================ ENV ================"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null
 python - <<'PY'
