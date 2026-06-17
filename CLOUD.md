@@ -36,7 +36,7 @@ Needs an HF token with the **Jobs** permission (`job.write`) and pay-as-you-go b
 
 ```bash
 hf jobs run --flavor l4x1 --timeout 50m python:3.11 \
-  bash -c "git clone --depth 1 https://github.com/DJLougen/axolotl-dgx-spark /w && cd /w && bash scripts/cloud_setup_and_bench.sh"
+  bash -c "git clone --depth 1 https://github.com/DJLougen/axoFast /w && cd /w && bash scripts/cloud_setup_and_bench.sh"
 ```
 
 `scripts/cloud_setup_and_bench.sh` installs the stack on a clean base and benchmarks vanilla vs optimized.
