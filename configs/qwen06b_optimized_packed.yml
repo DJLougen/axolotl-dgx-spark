@@ -1,0 +1,59 @@
+# OPTIMIZED + SAMPLE PACKING: same fused kernels, plus multipack to remove padding waste.
+# Identical to qwen06b_optimized.yml except sample_packing: true (+ separate cache/output).
+base_model: Qwen/Qwen3-0.6B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+load_in_4bit: true
+adapter: qlora
+strict: false
+chat_template: qwen3
+
+datasets:
+  - path: data/bench_chat.jsonl
+    type: chat_template
+    field_messages: messages
+dataset_prepared_path: data/prepared_packed
+output_dir: outputs/optimized_packed
+val_set_size: 0
+
+sequence_len: 1024
+sample_packing: true
+pad_to_sequence_len: true
+
+micro_batch_size: 8
+gradient_accumulation_steps: 1
+num_epochs: 1
+max_steps: 30
+optimizer: adamw_bnb_8bit
+lr_scheduler: cosine
+learning_rate: 0.0002
+warmup_steps: 5
+weight_decay: 0.0
+
+bf16: true
+tf32: true
+gradient_checkpointing: false
+
+flash_attention: true   # flash-attn2 (kernels-community); pairs well with packing (varlen)
+
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.0
+lora_target_linear: true
+
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_layer_norm: false
+liger_glu_activation: false
+liger_fused_linear_cross_entropy: true
+lora_mlp_kernel: true
+lora_qkv_kernel: true
+lora_o_kernel: true
+
+logging_steps: 1
+save_strategy: "no"
+special_tokens:
+seed: 1234

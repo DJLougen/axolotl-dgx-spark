@@ -1,0 +1,17 @@
+{
+  "train_runtime": 215.3,
+  "samples_per_s_logged": 4.459,
+  "steps_per_s_logged": 0.139,
+  "peak_reserved_gib": 40.21,
+  "total_tokens": 983040,
+  "trainable_tokens": null,
+  "final_loss": 0.7885,
+  "timed_out": false,
+  "tag": "axo_mbs32",
+  "config": "configs/qwen06b_optimized.yml",
+  "measure_steps": 30,
+  "wall_including_load_s": 248.38,
+  "total_tokens_from_shape": true,
+  "total_tok_per_s": 4565.9,
+  "steps_per_s": 0.1393
+}

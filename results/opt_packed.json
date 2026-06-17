@@ -1,0 +1,17 @@
+{
+  "train_runtime": 64.28,
+  "samples_per_s_logged": 3.734,
+  "steps_per_s_logged": 0.467,
+  "peak_reserved_gib": 10.51,
+  "total_tokens": 245760,
+  "trainable_tokens": null,
+  "final_loss": 1.337,
+  "timed_out": false,
+  "tag": "opt_packed",
+  "config": "configs/qwen06b_optimized_packed.yml",
+  "measure_steps": 30,
+  "wall_including_load_s": 107.46,
+  "total_tokens_from_shape": true,
+  "total_tok_per_s": 3823.3,
+  "steps_per_s": 0.4667
+}

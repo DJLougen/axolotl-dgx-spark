@@ -1,0 +1,15 @@
+{
+  "tag": "u17_8",
+  "framework": "unsloth",
+  "measure_steps": 20,
+  "train_runtime": 41.09,
+  "peak_reserved_gib": 18.99,
+  "total_tokens": 163840,
+  "final_loss": 1.8031,
+  "total_tok_per_s": 3987.2,
+  "steps_per_s": 0.4867,
+  "grad_ckpt": "false",
+  "seq_len": 1024,
+  "mbs": 8,
+  "load_4bit": true
+}

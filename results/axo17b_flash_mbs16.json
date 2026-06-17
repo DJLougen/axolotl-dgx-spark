@@ -1,0 +1,17 @@
+{
+  "train_runtime": 86.3,
+  "samples_per_s_logged": 3.708,
+  "steps_per_s_logged": 0.232,
+  "peak_reserved_gib": 26.67,
+  "total_tokens": 327680,
+  "trainable_tokens": null,
+  "final_loss": 1.46,
+  "timed_out": false,
+  "tag": "axo17b_flash_mbs16",
+  "config": "configs/qwen17b_optimized.yml",
+  "measure_steps": 20,
+  "wall_including_load_s": 141.67,
+  "total_tokens_from_shape": true,
+  "total_tok_per_s": 3797.0,
+  "steps_per_s": 0.2317
+}

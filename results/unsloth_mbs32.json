@@ -1,0 +1,15 @@
+{
+  "tag": "unsloth_mbs32",
+  "framework": "unsloth",
+  "measure_steps": 30,
+  "train_runtime": 114.99,
+  "peak_reserved_gib": 52.86,
+  "total_tokens": 983040,
+  "final_loss": 0.9099,
+  "total_tok_per_s": 8548.7,
+  "steps_per_s": 0.2609,
+  "grad_ckpt": "false",
+  "seq_len": 1024,
+  "mbs": 32,
+  "load_4bit": true
+}

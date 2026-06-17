@@ -1,0 +1,17 @@
+{
+  "train_runtime": 44.17,
+  "samples_per_s_logged": 5.433,
+  "steps_per_s_logged": 0.679,
+  "peak_reserved_gib": 9.76,
+  "total_tokens": 245760,
+  "trainable_tokens": null,
+  "final_loss": 0.8083,
+  "timed_out": false,
+  "tag": "opt16_flash",
+  "config": "configs/qwen06b_lora16.yml",
+  "measure_steps": 30,
+  "wall_including_load_s": 75.73,
+  "total_tokens_from_shape": true,
+  "total_tok_per_s": 5564.0,
+  "steps_per_s": 0.6792
+}

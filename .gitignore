@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# training/data artifacts (regenerate via scripts/gen_data.py)
+data/
+outputs/
+*.log
+last_run_prepared/
+# editor
+.vscode/
+.idea/

@@ -1,0 +1,74 @@
+# SelfTrace Axolotl QLoRA — OPTIMIZED for the DGX Spark (GB10, aarch64, sm_121).
+# Derived from selftrace_qwen3_17b_qlora_smoke_base.yml. Run in the `axfast` env with
+# TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas (see README). Your quality knobs are UNCHANGED
+# (lora_dropout 0.05 kept) — the speedup comes from Liger fused kernels, which work with dropout.
+base_model: Qwen/Qwen3-1.7B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false        # Qwen3 is native in transformers 5.x (no remote code needed)
+load_in_4bit: true
+adapter: qlora
+strict: false
+chat_template: qwen3
+datasets:
+  - path: data/selftrace_train_sft_smoke.jsonl
+    type: chat_template
+    field_messages: messages
+test_datasets:
+  - path: data/selftrace_val_sft_smoke.jsonl
+    type: chat_template
+    field_messages: messages
+dataset_prepared_path: data/axolotl_prepared_opt
+output_dir: outputs/selftrace-qwen3-17b-qlora-optimized
+sequence_len: 4096
+sample_packing: true            # pack short turns -> far fewer padded tokens -> big epoch-time win
+pad_to_sequence_len: true
+micro_batch_size: 1
+gradient_accumulation_steps: 4
+num_epochs: 1.0
+optimizer: adamw_bnb_8bit
+lr_scheduler: cosine
+learning_rate: 2e-4
+weight_decay: 0.0
+warmup_steps: 10
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+
+# Attention: KEEP flash_attention ON (this is your original setting and it is correct on GB10).
+# The flash-attn *package* has no aarch64/Blackwell wheel, but transformers 5.x transparently uses
+# `kernels-community/flash-attn2` (HF `kernels` library) instead — verified working here. In real
+# training (with padding/packing masks) this is ~1.4x faster AND lighter than SDPA, which drops to a
+# slower backend under masking. Needs network once to fetch the kernel (then cached).
+flash_attention: true
+
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.05              # UNCHANGED — your regularization is preserved (Liger supports dropout)
+lora_target_linear: true
+
+# Unsloth-equivalent fused kernels. Liger is the big win and is dropout-compatible:
+#  - liger_fused_linear_cross_entropy never materializes the 152k-vocab logits (the main memory saver)
+#  - liger_rms_norm / liger_rope fuse the norm+rotary path
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_layer_norm: false
+liger_glu_activation: true      # safe to fuse SwiGLU here (no lora_mlp_kernel in this variant)
+liger_fused_linear_cross_entropy: true
+
+# OPTIONAL — extra ~7 GiB memory savings, but REQUIRES lora_dropout: 0.0 (kernels don't support dropout):
+#   set  lora_dropout: 0.0  above, then uncomment:
+# lora_mlp_kernel: true
+# lora_qkv_kernel: true
+# lora_o_kernel: true
+# liger_glu_activation: false   # (let lora_mlp_kernel own the MLP if you enable the kernels)
+
+save_safetensors: true
+save_total_limit: 2
+save_strategy: epoch
+logging_steps: 5
+val_set_size: 0
+evals_per_epoch: 2

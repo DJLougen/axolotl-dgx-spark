@@ -1,0 +1,62 @@
+# OPTIMIZED: Axolotl QLoRA with the Unsloth-equivalent fused kernels.
+# Identical to qwen06b_vanilla.yml EXCEPT the kernel flags at the bottom.
+base_model: Qwen/Qwen3-0.6B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+load_in_4bit: true
+adapter: qlora
+strict: false
+chat_template: qwen3
+
+datasets:
+  - path: data/bench_chat.jsonl
+    type: chat_template
+    field_messages: messages
+dataset_prepared_path: data/prepared_optimized
+output_dir: outputs/optimized
+val_set_size: 0
+
+sequence_len: 1024
+sample_packing: false
+pad_to_sequence_len: true
+
+micro_batch_size: 8
+gradient_accumulation_steps: 1
+num_epochs: 1
+max_steps: 30
+optimizer: adamw_bnb_8bit
+lr_scheduler: cosine
+learning_rate: 0.0002
+warmup_steps: 5
+weight_decay: 0.0
+
+bf16: true
+tf32: true
+gradient_checkpointing: false
+
+flash_attention: true   # kernels-community/flash-attn2 on GB10; ~1.4x faster than SDPA in real training
+
+lora_r: 16
+lora_alpha: 32
+lora_dropout: 0.0
+lora_target_linear: true
+
+# === Unsloth-equivalent fused kernels (the speed unlock) ===
+# Liger: fused RMSNorm, RoPE, and fused-linear-cross-entropy (same fusions Unsloth uses).
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_layer_norm: false
+liger_glu_activation: false          # MLP is owned by lora_mlp_kernel below (avoid double-patch)
+liger_fused_linear_cross_entropy: true
+# Axolotl's Unsloth-inspired LoRA Triton kernels (fused LoRA+base for MLP and attention proj).
+lora_mlp_kernel: true
+lora_qkv_kernel: true
+lora_o_kernel: true
+
+logging_steps: 1
+save_strategy: "no"
+special_tokens:
+seed: 1234

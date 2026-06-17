@@ -1,0 +1,14 @@
+{
+  "tag": "unsloth",
+  "framework": "unsloth",
+  "measure_steps": 6,
+  "train_runtime": 11.9,
+  "peak_reserved_gib": 13.71,
+  "total_tokens": 49152,
+  "final_loss": 2.4212,
+  "total_tok_per_s": 4131.0,
+  "steps_per_s": 0.5043,
+  "grad_ckpt": "false",
+  "seq_len": 1024,
+  "mbs": 8
+}

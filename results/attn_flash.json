@@ -1,0 +1,17 @@
+{
+  "train_runtime": 44.79,
+  "samples_per_s_logged": 5.358,
+  "steps_per_s_logged": 0.67,
+  "peak_reserved_gib": 11.84,
+  "total_tokens": 245760,
+  "trainable_tokens": null,
+  "final_loss": 0.8209,
+  "timed_out": false,
+  "tag": "attn_flash",
+  "config": "configs/qwen06b_optimized.yml",
+  "measure_steps": 30,
+  "wall_including_load_s": 75.52,
+  "total_tokens_from_shape": true,
+  "total_tok_per_s": 5486.9,
+  "steps_per_s": 0.6698
+}
