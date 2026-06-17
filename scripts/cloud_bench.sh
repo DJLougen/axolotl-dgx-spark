@@ -6,6 +6,12 @@ set -u
 # The official axolotl image ships a torchvision whose ABI mismatches its torch, which crashes
 # `import transformers` (torchvision::nms). LLM training doesn't need vision -> remove it.
 pip uninstall -y torchvision >/dev/null 2>&1 || true
+# This image's bitsandbytes can't find CUDA-13 libnvJitLink; point it at torch's bundled copy.
+LNV=$(find /root /usr /opt -name "libnvJitLink.so.13" 2>/dev/null | head -1)
+[ -n "$LNV" ] && export LD_LIBRARY_PATH="$(dirname "$LNV"):${LD_LIBRARY_PATH:-}" && echo "bnb fix: + $(dirname "$LNV")"
+# Enable flash-attn2 without the (uninstalled) flash-attn package: transformers 5.x uses the
+# kernels-community/flash-attn2 kernel from the HF `kernels` lib (downloaded once at runtime).
+pip install -q kernels >/dev/null 2>&1 || true
 echo "================ ENV ================"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null
 python - <<'PY'
