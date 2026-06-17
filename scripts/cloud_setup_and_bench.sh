@@ -3,11 +3,17 @@
 # that runs on the GB10 Spark, but x86 + CUDA 12.8 (no ptxas hack needed). Proves the recipe transfers.
 set -u
 echo "================ INSTALL (clean stack, mirrors GB10 axfast) ================"
-pip install -q torch==2.9.1 --index-url https://download.pytorch.org/whl/cu128 2>&1 | tail -1
 pip install -q "axolotl==0.17.0" 2>&1 | tail -2
+# axolotl pulls torch 2.12+cu130, where bitsandbytes 0.49 can't find libnvJitLink -> 4-bit breaks.
+# Pin torch back to 2.9.1+cu128 (mature; bnb works), matching the GB10 Spark stack.
+pip install -q --force-reinstall --no-deps torch==2.9.1 --index-url https://download.pytorch.org/whl/cu128 2>&1 | tail -1
 pip install -q --no-deps torchao liger-kernel 2>&1 | tail -1
-pip install -q kernels 2>&1 | tail -1   # enables flash-attn2 via kernels-community (no flash-attn build)
+pip install -q kernels 2>&1 | tail -1   # flash-attn2 via kernels-community (no flash-attn build)
+# belt-and-suspenders: ensure bnb can find CUDA libnvJitLink from torch's bundled nvidia libs
+NVDIR=$(dirname "$(find /usr/local/lib -name 'libnvJitLink.so*' 2>/dev/null | head -1)" 2>/dev/null)
+[ -n "$NVDIR" ] && export LD_LIBRARY_PATH="$NVDIR:${LD_LIBRARY_PATH:-}"
 python -c "import torch; print('torch', torch.__version__, torch.cuda.is_available())" 2>&1 | tail -1
+python -c "import bitsandbytes; print('bnb loads OK')" 2>&1 | tail -1
 
 echo "================ ENV ================"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null
